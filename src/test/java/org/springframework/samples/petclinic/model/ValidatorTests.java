@@ -45,7 +45,7 @@ class ValidatorTests {
 
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
 		Person person = new Person();
-		person.setFirstName("");
+		person.setFirstName("mr"); // TODO - shouldn't this be set to the empty string?
 		person.setLastName("smith");
 
 		Validator validator = createValidator();
