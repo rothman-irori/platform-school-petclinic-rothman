@@ -1,0 +1,27 @@
+name: Build app and publish image to GHCR
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'adopt'
+          cache: maven
+      
+      - name: Run Tests with Maven
+        run: ./mvnw test
+      
+      - name: Build with Maven, generate container image and push to GHCR
+        run: >
+          ./mvnw -B package
+          -Dspring-boot.build-image.imageName=ghcr.io/${{ github.repository }}:latest
+          -Dspring-boot.build-image.publish=true
+          -Ddocker.publishRegistry.username=${{ github.actor }}
+          -Ddocker.publishRegistry.password=${{ secrets.GITHUB_TOKEN }}
+      
